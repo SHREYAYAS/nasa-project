@@ -1,6 +1,4 @@
 {
-  "framework": "nextjs",
-  "buildCommand": "npm install --legacy-peer-deps && npm run build",
   "installCommand": "npm install --legacy-peer-deps",
   "env": {
     "NASA_API_KEY": "DEMO_KEY"
