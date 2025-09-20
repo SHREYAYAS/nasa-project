@@ -1,13 +1,22 @@
 "use client"
 
+import { useState } from "react"
+import dynamic from "next/dynamic"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Recycle, Factory, Wrench, TrendingUp, AlertTriangle } from "lucide-react"
+import { Recycle, Factory, Wrench, TrendingUp, AlertTriangle, Eye, RotateCcw } from "lucide-react"
+
+// Dynamically import the 3D components to avoid SSR issues
+const OrbitalScene = dynamic(() => import("./orbital-scene"), { ssr: false })
+const SatelliteInteriorScene = dynamic(() => import("./satellite-interior-scene"), { ssr: false })
 
 export function SymbioticsPanel() {
+  const [viewMode, setViewMode] = useState<"dashboard" | "3d-operations" | "interior">("dashboard")
+  const [selectedOperation, setSelectedOperation] = useState<string | null>(null)
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -15,14 +24,116 @@ export function SymbioticsPanel() {
           <h2 className="text-2xl font-bold">Orbital Symbiotics Operations</h2>
           <p className="text-muted-foreground">Debris recycling, manufacturing, and satellite servicing</p>
         </div>
-        <Button>
-          <TrendingUp className="h-4 w-4 mr-2" />
-          View Reports
-        </Button>
+        <div className="flex items-center gap-2">
+          {viewMode !== "dashboard" && (
+            <Button variant="outline" onClick={() => setViewMode("dashboard")}>
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Button>
+          )}
+          <Button 
+            variant={viewMode === "3d-operations" ? "default" : "outline"}
+            onClick={() => setViewMode("3d-operations")}
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            3D Operations View
+          </Button>
+          <Button variant="outline">
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Reports
+          </Button>
+        </div>
       </div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* 3D Operations View */}
+      {viewMode === "3d-operations" && (
+        <Card className="border-primary/20 bg-gradient-to-br from-card via-card to-card/80 shadow-xl">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <Recycle className="h-5 w-5 text-primary" />
+              Live Symbiotic Operations View
+            </CardTitle>
+            <CardDescription>
+              Real-time 3D visualization of debris collection, processing, and satellite servicing operations
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="relative h-[600px] w-full rounded-b-xl overflow-hidden">
+              <OrbitalScene 
+                isPlaying={true}
+                timeScale={1}
+                selectedSatellite={null}
+                onSatelliteSelect={() => {}}
+                onViewInterior={(index: number) => {
+                  setSelectedOperation(`operation-${index}`)
+                  setViewMode("interior")
+                }}
+              />
+              
+              {/* Operations overlay */}
+              <div className="absolute top-4 left-4 space-y-2 pointer-events-none">
+                <div className="bg-black/60 backdrop-blur-sm rounded-lg p-3 text-xs font-mono text-cyan-400 border border-cyan-500/30">
+                  <div className="text-cyan-300 font-semibold mb-2">ACTIVE SYMBIOTIC OPERATIONS</div>
+                  <div>🛰️ DEBRIS COLLECTION: 3 missions active</div>
+                  <div>🔧 SATELLITE SERVICING: OrbNet-2 fuel refill 67%</div>
+                  <div>🏭 MANUFACTURING: Solar panel assembly in progress</div>
+                  <div>♻️ PROCESSING: 847kg material recycled today</div>
+                </div>
+              </div>
+
+              {/* Mission status */}
+              <div className="absolute top-4 right-4 pointer-events-none">
+                <div className="bg-green-900/60 backdrop-blur-sm rounded-lg p-3 text-xs font-mono text-green-300 border border-green-500/30">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    SYMBIOSIS ACTIVE
+                  </div>
+                  <div>EFFICIENCY: 94%</div>
+                  <div>MATERIAL YIELD: 89%</div>
+                  <div>OPERATIONS: 7 concurrent</div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Interior View */}
+      {viewMode === "interior" && (
+        <Card className="border-primary/20 bg-gradient-to-br from-card via-card to-card/80 shadow-xl">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <Factory className="h-5 w-5 text-primary" />
+              Symbiont Manufacturing & Processing Hub
+            </CardTitle>
+            <CardDescription>
+              Inside view of orbital debris processing and component manufacturing
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="relative h-[600px] w-full rounded-b-xl overflow-hidden">
+              <SatelliteInteriorScene 
+                activeSystem="furnace"
+                currentOperation={{
+                  id: "symbiotic-process-1",
+                  satelliteName: "DEBRIS-PROCESSOR-1",
+                  operation: "repair",
+                  component: "Debris Processing Unit",
+                  duration: 120,
+                  progress: 67,
+                  status: "in-progress"
+                }}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Dashboard View */}
+      {viewMode === "dashboard" && (
+        <>
+          {/* Key Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -301,6 +412,8 @@ export function SymbioticsPanel() {
           </Card>
         </TabsContent>
       </Tabs>
+        </>
+      )}
     </div>
   )
 }
