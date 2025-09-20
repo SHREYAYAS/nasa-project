@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-// This line is required to fix the error
+// This line is required for dynamic routes on Vercel and Render
 export const dynamic = 'force-dynamic';
 
 // NASA Orbital Debris Data Integration - Server Side
@@ -19,8 +19,8 @@ interface DebrisObject {
   inclination: number;
   period: number;
   eccentricity: number;
-  rcs: number; // Added missing property
-  status: "active" | "inactive" | "decayed"; // Added missing property
+  rcs: number;
+  status: "active" | "inactive" | "decayed";
   lastUpdate: string;
 }
 
@@ -31,14 +31,10 @@ interface NASADebrisResponse {
 }
 
 class ServerNASADebrisClient {
-  private baseUrl = "https://api.nasa.gov/orbital-debris";
-  private apiKey = process.env.NASA_API_KEY || "DEMO_KEY"; // Server-side only
+  private apiKey = process.env.NASA_API_KEY || "DEMO_KEY";
 
   async getDebrisData(params?: {
-    altitude?: [number, number];
-    size?: [number, number];
     limit?: number;
-    type?: string[];
   }): Promise<NASADebrisResponse> {
     const debrisObjects: DebrisObject[] = [];
     const limit = params?.limit || 100;
@@ -74,8 +70,8 @@ class ServerNASADebrisClient {
       const countries = ["USA", "Russia", "China", "ESA", "Japan", "India", "Unknown"];
 
       debrisObjects.push({
-        id: `DEBRIS-${String(i + 1).padStart(6, "0")}`, // Corrected syntax
-        name: type === "satellite" ? `SAT-${i + 1}` : type === "rocket_body" ? `RB-${i + 1}` : `FRAG-${i + 1}`, // Corrected syntax
+        id: `DEBRIS-${String(i + 1).padStart(6, "0")}`,
+        name: type === "satellite" ? `SAT-${i + 1}` : type === "rocket_body" ? `RB-${i + 1}` : `FRAG-${i + 1}`,
         position: [x / 100, y / 100, z / 100],
         velocity: [(Math.random() - 0.5) * 0.1, (Math.random() - 0.5) * 0.1, (Math.random() - 0.5) * 0.1],
         size,
@@ -92,4 +88,32 @@ class ServerNASADebrisClient {
         inclination,
         period: 90 + (altitude / 100) * 10,
         eccentricity: Math.random() * 0.1,
-        rcs: size * size * Math
+        rcs: size * size * Math.PI,
+        status: Math.random() < 0.1 ? "active" : Math.random() < 0.8 ? "inactive" : "decayed",
+        lastUpdate: new Date().toISOString(),
+      });
+    }
+
+    return {
+      data: debrisObjects,
+      totalCount: 34000,
+      lastUpdated: new Date().toISOString(),
+    };
+  }
+}
+
+const serverNASAClient = new ServerNASADebrisClient();
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const limit = Number.parseInt(searchParams.get("limit") || "100");
+    
+    const debrisData = await serverNASAClient.getDebrisData({ limit });
+
+    return NextResponse.json(debrisData);
+  } catch (error) {
+    console.error("Failed to fetch NASA debris data:", error);
+    return NextResponse.json({ error: "Failed to fetch debris data" }, { status: 500 });
+  }
+}
