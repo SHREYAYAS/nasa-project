@@ -1,7 +1,6 @@
 {
   "framework": "nextjs",
   "buildCommand": "npm install --legacy-peer-deps && npm run build",
-  "outputDirectory": ".next",
   "installCommand": "npm install --legacy-peer-deps",
   "functions": {
     "app/api/**/*.ts": {
@@ -10,5 +9,6 @@
   },
   "env": {
     "NASA_API_KEY": "DEMO_KEY"
-  }
+  },
+  "regions": ["iad1"]
 }
