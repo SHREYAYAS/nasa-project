@@ -1,5 +1,6 @@
-import { type NextRequest, NextResponse } from "next/server"
 
+import { type NextRequest, NextResponse } from "next/server"
+export const dynamic = 'force-dynamic';
 // NASA Orbital Debris Data Integration - Server Side
 interface DebrisObject {
   id: string
