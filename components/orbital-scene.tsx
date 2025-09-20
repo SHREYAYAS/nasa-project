@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Zap, Target, Wrench, Eye } from "lucide-react"
 import * as THREE from "three"
 import { nasaDebrisClient, type DebrisObject } from "@/lib/nasa-debris"
+import { ClientOnlyWrapper } from "./client-only-wrapper"
 
 function Earth() {
   const earthRef = useRef<THREE.Mesh>(null)
@@ -633,8 +634,10 @@ function OrbitalScene({
 
 export default function OrbitalSceneWrapper(props: any) {
   return (
-    <Canvas camera={{ fov: 60 }}>
-      <OrbitalScene {...props} />
-    </Canvas>
+    <ClientOnlyWrapper>
+      <Canvas camera={{ fov: 60 }}>
+        <OrbitalScene {...props} />
+      </Canvas>
+    </ClientOnlyWrapper>
   )
 }

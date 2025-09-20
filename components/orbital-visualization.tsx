@@ -8,16 +8,17 @@ import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import { Play, Pause, RotateCcw, Zap, Target, Wrench, Eye, Database } from "lucide-react"
 
-// Dynamically import Three.js components to avoid SSR issues
-const Canvas = dynamic(() => import("@react-three/fiber").then((mod) => ({ default: mod.Canvas })), {
-  ssr: false,
-  loading: () => <div className="flex items-center justify-center h-full text-muted-foreground">Loading 3D Scene...</div>
-})
-
-// Create a client-only component for the 3D scene
+// Create a client-only component for the 3D scene with proper error boundary
 const OrbitalScene3D = dynamic(() => import("./orbital-scene"), {
   ssr: false,
-  loading: () => <div className="flex items-center justify-center h-full text-muted-foreground">Initializing Orbital View...</div>
+  loading: () => (
+    <div className="flex items-center justify-center h-full text-muted-foreground">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+        <div>Initializing 3D Orbital View...</div>
+      </div>
+    </div>
+  )
 })
 
 

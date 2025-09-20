@@ -3,6 +3,7 @@
 import { useRef, useState } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
 import { OrbitControls, Html, Environment } from "@react-three/drei"
+import { ClientOnlyWrapper } from "./client-only-wrapper"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Thermometer, Printer, Wrench, Settings, AlertTriangle, CheckCircle } from "lucide-react"
@@ -605,59 +606,61 @@ function RepairStation({
 
 export default function SatelliteInteriorScene({ activeSystem, currentOperation }: { activeSystem: string | null, currentOperation?: RepairOperation }) {
   return (
-    <Canvas camera={{ position: [3, 2.5, 3], fov: 60 }}>
-      {/* Enhanced lighting for better visibility */}
-      <ambientLight intensity={0.5} />
-      <pointLight position={[2, 2, 2]} intensity={1.2} color="#ffffff" />
-      <pointLight position={[-2, 1, -1]} intensity={0.8} color="#3B82F6" />
-      <spotLight position={[0, 3, 0]} intensity={1} angle={0.6} penumbra={0.5} />
-      <pointLight position={[0, 1, 2]} intensity={0.6} color="#10B981" />
+    <ClientOnlyWrapper>
+      <Canvas camera={{ position: [3, 2.5, 3], fov: 60 }}>
+        {/* Enhanced lighting for better visibility */}
+        <ambientLight intensity={0.5} />
+        <pointLight position={[2, 2, 2]} intensity={1.2} color="#ffffff" />
+        <pointLight position={[-2, 1, -1]} intensity={0.8} color="#3B82F6" />
+        <spotLight position={[0, 3, 0]} intensity={1} angle={0.6} penumbra={0.5} />
+        <pointLight position={[0, 1, 2]} intensity={0.6} color="#10B981" />
 
-      <Environment preset="warehouse" />
+        <Environment preset="warehouse" />
 
-      {/* Interior walls with enhanced detail */}
-      <mesh position={[0, 0, -2]}>
-        <boxGeometry args={[4, 3, 0.1]} />
-        <meshStandardMaterial color="#1E293B" metalness={0.3} roughness={0.7} />
-      </mesh>
-      <mesh position={[-2, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <boxGeometry args={[4, 3, 0.1]} />
-        <meshStandardMaterial color="#1E293B" metalness={0.3} roughness={0.7} />
-      </mesh>
-      <mesh position={[2, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
-        <boxGeometry args={[4, 3, 0.1]} />
-        <meshStandardMaterial color="#1E293B" metalness={0.3} roughness={0.7} />
-      </mesh>
+        {/* Interior walls with enhanced detail */}
+        <mesh position={[0, 0, -2]}>
+          <boxGeometry args={[4, 3, 0.1]} />
+          <meshStandardMaterial color="#1E293B" metalness={0.3} roughness={0.7} />
+        </mesh>
+        <mesh position={[-2, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+          <boxGeometry args={[4, 3, 0.1]} />
+          <meshStandardMaterial color="#1E293B" metalness={0.3} roughness={0.7} />
+        </mesh>
+        <mesh position={[2, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
+          <boxGeometry args={[4, 3, 0.1]} />
+          <meshStandardMaterial color="#1E293B" metalness={0.3} roughness={0.7} />
+        </mesh>
 
-      {/* Enhanced floor with grid pattern */}
-      <mesh position={[0, -1.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <boxGeometry args={[4, 4, 0.1]} />
-        <meshStandardMaterial color="#0F172A" metalness={0.5} roughness={0.5} />
-      </mesh>
+        {/* Enhanced floor with grid pattern */}
+        <mesh position={[0, -1.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <boxGeometry args={[4, 4, 0.1]} />
+          <meshStandardMaterial color="#0F172A" metalness={0.5} roughness={0.5} />
+        </mesh>
 
-      <DebrisCollectionArm
-        position={[-1.2, -0.5, 1]}
-        rotation={[0, -Math.PI / 4, 0]}
-        isActive={activeSystem === "debris-collector"}
-      />
-      <RepairStation
-        position={[1.2, -0.8, 1]}
-        isActive={activeSystem === "repair-station"}
-        currentOperation={currentOperation}
-      />
-      <Furnace position={[0, -0.5, -1.2]} isActive={activeSystem === "furnace"} />
-      <Printer3D position={[1.2, -0.5, -1.2]} isActive={activeSystem === "printer"} />
-      <RoboticArm position={[-1.2, -0.5, -0.2]} rotation={[0, Math.PI / 6, 0]} isActive={activeSystem === "arm1"} />
-      <RoboticArm position={[0.8, -0.5, 0.2]} rotation={[0, -Math.PI / 3, 0]} isActive={activeSystem === "arm2"} />
+        <DebrisCollectionArm
+          position={[-1.2, -0.5, 1]}
+          rotation={[0, -Math.PI / 4, 0]}
+          isActive={activeSystem === "debris-collector"}
+        />
+        <RepairStation
+          position={[1.2, -0.8, 1]}
+          isActive={activeSystem === "repair-station"}
+          currentOperation={currentOperation}
+        />
+        <Furnace position={[0, -0.5, -1.2]} isActive={activeSystem === "furnace"} />
+        <Printer3D position={[1.2, -0.5, -1.2]} isActive={activeSystem === "printer"} />
+        <RoboticArm position={[-1.2, -0.5, -0.2]} rotation={[0, Math.PI / 6, 0]} isActive={activeSystem === "arm1"} />
+        <RoboticArm position={[0.8, -0.5, 0.2]} rotation={[0, -Math.PI / 3, 0]} isActive={activeSystem === "arm2"} />
 
-      <OrbitControls
-        enablePan={true}
-        enableZoom={true}
-        enableRotate={true}
-        minDistance={2}
-        maxDistance={10}
-        maxPolarAngle={Math.PI / 2}
-      />
-    </Canvas>
+        <OrbitControls
+          enablePan={true}
+          enableZoom={true}
+          enableRotate={true}
+          minDistance={2}
+          maxDistance={10}
+          maxPolarAngle={Math.PI / 2}
+        />
+      </Canvas>
+    </ClientOnlyWrapper>
   )
 }
