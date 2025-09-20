@@ -70,7 +70,4 @@ That's it! Your NASA debris tracking platform should now be running locally.
 - Real-time 3D visualization
 - NASA API integration
 
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/your-username/nasa-project-lake/issues)
 - **Documentation**: [Live Demo](https://nasa-project-lake.vercel.app/)
