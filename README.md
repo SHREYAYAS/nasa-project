@@ -2,8 +2,6 @@
 
 A real-time Low Earth Orbit (LEO) debris tracking and management system that integrates NASA's live data with advanced 3D visualization, blockchain verification, and autonomous collection planning.
 
-**Live Demo:** [https://nasa-project-lake.vercel.app/](https://nasa-project-lake.vercel.app/)
-
 ## 🚀 Setup Instructions
 
 ### Prerequisites
@@ -70,4 +68,4 @@ That's it! Your NASA debris tracking platform should now be running locally.
 - Real-time 3D visualization
 - NASA API integration
 
-- **Documentation**: [Live Demo](https://nasa-project-lake.vercel.app/)
+- **Documentation**: [Live Demo] https://tinyurl.com/NASA25Orbitalsymbiotics
