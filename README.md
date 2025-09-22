@@ -13,7 +13,7 @@ A real-time Low Earth Orbit (LEO) debris tracking and management system that int
 
 1. **Clone the repository**
    \`\`\`bash
-   git clone https://github.com/your-username/nasa-project-lake.git
+   git clone https://tinyurl.com/NASA25Orbitalsymbiotics
    cd nasa-project-lake
    \`\`\`
 
